@@ -1,7 +1,13 @@
-import Post from './post';
-import json from './assets/my-json';
-import WebpackLogo from './assets/logo.png';
+import * as $ from 'jquery';
+import Post from '@models/post';
+// import json from './assets/my-json';
+// import xml from './assets/data.xml';
+// import csv from './assets/random-data.csv';
+import WebpackLogo from './assets/logo';
 import './style/style.css';
 const post = new Post('Webpack Post Title', WebpackLogo);
-console.log('Post to string', post.toString());
-console.log('My JSON:', json);
+$('pre').addClass('code-2').html(post.toString());
+// console.log('Post to string', post.toString());
+// console.log('My JSON:', json);
+// console.log('My XML:', xml);
+// console.log('My CSV:', csv);

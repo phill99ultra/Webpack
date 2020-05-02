@@ -1,11 +1,12 @@
+import * as $ from 'jquery';
 const createAnalytics = () => {
     let counter = 0,
         destroy = false;
     const listner = () => counter++;
-    document.addEventListener('click', listner);
+    $(document).on('click', listner);
     return {
         destroy() {
-            document.removeEventListener('click', listner);
+            $(document).of('click', listner);
             destroy = true;
         },
         getClicks() {
