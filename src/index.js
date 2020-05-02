@@ -5,6 +5,8 @@ import Post from '@models/post';
 // import csv from './assets/random-data.csv';
 import WebpackLogo from './assets/logo';
 import './style/style.css';
+import './style/style.styl';
+import './babel';
 const post = new Post('Webpack Post Title', WebpackLogo);
 $('pre').addClass('code-2').html(post.toString());
 // console.log('Post to string', post.toString());

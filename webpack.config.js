@@ -7,6 +7,7 @@ const path = require('path'),
     MiniCssExtractPlugin = require('mini-css-extract-plugin'),
     OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin'),
     TerserWebpackPLugin = require('terser-webpack-plugin'),
+    rupture = require('rupture'),
     isDev = process.env.NODE_ENV === 'development',
     isProd = !isDev,
     optimization = () => {
@@ -22,18 +23,30 @@ const path = require('path'),
             ];
         }
         return config;
+    },
+    filename = ext => isDev ? `[name].${ext}` : `[name].[hash].${ext}`,
+    cssLoaders = extra => {
+        const loaders = [{
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+                hmr: isDev,
+                reloadAll: true
+            }
+        }, 'css-loader', 'postcss-loader'];
+        if (extra) {
+            loaders.push(extra);
+        }
+        return loaders;
     };
-console.log('Is dev:',
-    isDev);
 module.exports = {
     context: path.resolve(__dirname, 'src'),
     mode: 'development',
     entry: {
-        main: './index.js',
+        main: ['@babel/polyfill', './index.js'],
         analytics: './analytics.js'
     },
     output: {
-        filename: '[name].[contenthash].js',
+        filename: filename('js'),
         path: path.resolve(__dirname, 'dist')
     },
     resolve: {
@@ -62,19 +75,22 @@ module.exports = {
             to: path.resolve(__dirname, 'dist')
         }]),
         new MiniCssExtractPlugin({
-            filename: '[name].[contenthash].css'
+            filename: filename('css')
         })
     ],
     module: {
         rules: [{
                 test: /\.css$/,
-                use: [{
-                    loader: MiniCssExtractPlugin.loader,
+                use: cssLoaders()
+            },
+            {
+                test: /\.styl$/,
+                use: cssLoaders({
+                    loader: 'stylus-loader',
                     options: {
-                        hmr: isDev,
-                        reloadAll: true
+                        use: [rupture()]
                     }
-                }, 'css-loader']
+                })
             },
             {
                 test: /\.(png|jpg|svg|gif)$/,
@@ -91,6 +107,21 @@ module.exports = {
             {
                 test: /\.csv$/,
                 use: ['csv-loader']
+            },
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                loader: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: [
+                            '@babel/preset-env'
+                        ],
+                        plugins: [
+                            '@babel/plugin-proposal-class-properties'
+                        ]
+                    }
+                }
             }
         ]
     }
