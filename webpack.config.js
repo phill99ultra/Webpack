@@ -37,6 +37,20 @@ const path = require('path'),
             loaders.push(extra);
         }
         return loaders;
+    },
+    babelOptions = preset => {
+        const opts = {
+            presets: [
+                '@babel/preset-env'
+            ],
+            plugins: [
+                '@babel/plugin-proposal-class-properties'
+            ]
+        };
+        if (preset) {
+            opts.presets.push(preset);
+        }
+        return opts;
     };
 module.exports = {
     context: path.resolve(__dirname, 'src'),
@@ -113,14 +127,7 @@ module.exports = {
                 exclude: /node_modules/,
                 loader: {
                     loader: 'babel-loader',
-                    options: {
-                        presets: [
-                            '@babel/preset-env'
-                        ],
-                        plugins: [
-                            '@babel/plugin-proposal-class-properties'
-                        ]
-                    }
+                    options: babelOptions()
                 }
             }
         ]
