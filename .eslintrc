@@ -1,0 +1,21 @@
+{
+    "parser": "babel-eslint",
+    "rules": {
+        "no-unused-vars": "error"
+    },
+    "env": {
+        "es6": true,
+        "es2017": true,
+        "es2020": true,
+        "browser": true,
+        "node": true
+    },
+    "extends": [
+        "eslint:recommended"
+    ],
+    "globals": {
+        "$": true,
+        "require": true,
+        "process": true
+    }
+}

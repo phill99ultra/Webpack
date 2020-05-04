@@ -7,6 +7,9 @@ const path = require('path'),
     MiniCssExtractPlugin = require('mini-css-extract-plugin'),
     OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin'),
     TerserWebpackPLugin = require('terser-webpack-plugin'),
+    {
+        BundleAnalyzerPlugin
+    } = require('webpack-bundle-analyzer'),
     rupture = require('rupture'),
     isDev = process.env.NODE_ENV === 'development',
     isProd = !isDev,
@@ -51,6 +54,39 @@ const path = require('path'),
             opts.presets.push(preset);
         }
         return opts;
+    },
+    jsLoaders = () => {
+        const loaders = [{
+            loader: 'babel-loader',
+            options: babelOptions()
+        }];
+        if (isDev) {
+            loaders.push('eslint-loader');
+        }
+        return loaders;
+    },
+    plugins = () => {
+        const base = [
+            new HTMLWebpackPlugin({
+                // title: 'Webpack build of Fill',
+                template: './index.html',
+                minify: {
+                    collapseWhitespace: isProd
+                }
+            }),
+            new CleanWebpackPlugin(),
+            new CopyWebpackPlugin([{
+                from: path.resolve(__dirname, 'src/favicon.ico'),
+                to: path.resolve(__dirname, 'dist')
+            }]),
+            new MiniCssExtractPlugin({
+                filename: filename('css')
+            })
+        ];
+        if (isProd) {
+            base.push(new BundleAnalyzerPlugin());
+        }
+        return base;
     };
 module.exports = {
     context: path.resolve(__dirname, 'src'),
@@ -73,25 +109,11 @@ module.exports = {
     optimization: optimization(),
     devServer: {
         port: 4444,
-        hot: isDev
+        hot: isDev,
+        overlay: true
     },
-    plugins: [
-        new HTMLWebpackPlugin({
-            // title: 'Webpack build of Fill',
-            template: './index.html',
-            minify: {
-                collapseWhitespace: isProd
-            }
-        }),
-        new CleanWebpackPlugin(),
-        new CopyWebpackPlugin([{
-            from: path.resolve(__dirname, 'src/favicon.ico'),
-            to: path.resolve(__dirname, 'dist')
-        }]),
-        new MiniCssExtractPlugin({
-            filename: filename('css')
-        })
-    ],
+    devtool: isDev ? 'sourcemap' : '',
+    plugins: plugins(),
     module: {
         rules: [{
                 test: /\.css$/,
@@ -125,10 +147,7 @@ module.exports = {
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                loader: {
-                    loader: 'babel-loader',
-                    options: babelOptions()
-                }
+                use: jsLoaders()
             }
         ]
     }
