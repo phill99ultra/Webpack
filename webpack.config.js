@@ -68,7 +68,6 @@ const path = require('path'),
     plugins = () => {
         const base = [
             new HTMLWebpackPlugin({
-                // title: 'Webpack build of Fill',
                 template: './index.html',
                 minify: {
                     collapseWhitespace: isProd
@@ -77,7 +76,7 @@ const path = require('path'),
             new CleanWebpackPlugin(),
             new CopyWebpackPlugin([{
                 from: path.resolve(__dirname, 'src/favicon.ico'),
-                to: path.resolve(__dirname, 'dist')
+                to: path.resolve(__dirname, 'dist/images')
             }]),
             new MiniCssExtractPlugin({
                 filename: filename('css')
