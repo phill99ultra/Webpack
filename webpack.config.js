@@ -78,6 +78,10 @@ const path = require('path'),
                 from: path.resolve(__dirname, 'src/images/favicon.ico'),
                 to: path.resolve(__dirname, 'dist/images')
             }]),
+            // new CopyWebpackPlugin([{
+            //     from: path.resolve(__dirname, 'src/images'),
+            //     to: path.resolve(__dirname, 'dist/images')
+            // }]),
             new MiniCssExtractPlugin({
                 filename: filename('css')
             })
@@ -129,7 +133,15 @@ module.exports = {
             },
             {
                 test: /\.(png|jpg|svg|gif)$/,
-                use: ['file-loader']
+                loaders: [{
+                        loader: 'file-loader',
+                        options: {
+                            name: '[path][name][hash].[ext]'
+                        }
+                    },
+                    'img-loader'
+                ]
+                // use: ['file-loader']
             },
             {
                 test: /\.(ttf|woff|woff2|eot)$/,
