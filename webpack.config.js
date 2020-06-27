@@ -75,7 +75,7 @@ const path = require('path'),
             }),
             new CleanWebpackPlugin(),
             new CopyWebpackPlugin([{
-                from: path.resolve(__dirname, 'src/favicon.ico'),
+                from: path.resolve(__dirname, 'src/images/favicon.ico'),
                 to: path.resolve(__dirname, 'dist/images')
             }]),
             new MiniCssExtractPlugin({
@@ -95,7 +95,7 @@ module.exports = {
         analytics: './analytics.js'
     },
     output: {
-        filename: filename('js'),
+        filename: `js/${filename('js')}`,
         path: path.resolve(__dirname, 'dist')
     },
     resolve: {
