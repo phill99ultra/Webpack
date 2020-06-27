@@ -1,4 +1,5 @@
 const path = require('path'),
+    //Aditional Plugins
     HTMLWebpackPlugin = require('html-webpack-plugin'),
     {
         CleanWebpackPlugin
@@ -78,12 +79,14 @@ const path = require('path'),
                 from: path.resolve(__dirname, 'src/images/favicon.ico'),
                 to: path.resolve(__dirname, 'dist/images')
             }]),
-            // new CopyWebpackPlugin([{
-            //     from: path.resolve(__dirname, 'src/images'),
-            //     to: path.resolve(__dirname, 'dist/images')
-            // }]),
+            new CopyWebpackPlugin([{
+                from: path.resolve(__dirname, 'src/images/static'),
+                to: path.resolve(__dirname, 'dist/images/static')
+            }]),
             new MiniCssExtractPlugin({
                 filename: filename('css')
+                // filename: `css/${filename('css')}`,
+                // path: path.resolve(__dirname, 'dist')
             })
         ];
         if (isProd) {
@@ -118,11 +121,11 @@ module.exports = {
     devtool: isDev ? 'sourcemap' : '',
     plugins: plugins(),
     module: {
-        rules: [{
+        rules: [{ // for CSS files
                 test: /\.css$/,
                 use: cssLoaders()
             },
-            {
+            { // for Stylus files
                 test: /\.styl$/,
                 use: cssLoaders({
                     loader: 'stylus-loader',
@@ -132,16 +135,31 @@ module.exports = {
                 })
             },
             {
-                test: /\.(png|jpg|svg|gif)$/,
-                loaders: [{
-                        loader: 'file-loader',
-                        options: {
-                            name: '[path][name][hash].[ext]'
+                test: /\.html$/,
+                use: [{
+                    loader: 'html-loader',
+                    options: {
+                        attributes: {
+                            list: [{
+                                // Tag name
+                                tag: 'img',
+                                // Attribute name
+                                attribute: 'src',
+                                // Type of processing, can be `src` or `scrset`
+                                type: 'src',
+                            }]
                         }
-                    },
-                    'img-loader'
-                ]
-                // use: ['file-loader']
+                    }
+                }]
+            },
+            {
+                test: /\.(png|jpg|svg|gif)$/,
+                use: [{
+                    loader: 'file-loader',
+                    options: {
+                        name: 'images/[name][hash].[ext]'
+                    }
+                }]
             },
             {
                 test: /\.(ttf|woff|woff2|eot)$/,

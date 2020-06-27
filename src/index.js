@@ -6,6 +6,7 @@
 // import WebpackLogo from './assets/logo';
 // import './style/style.css';
 import './style/style.styl';
+// import './index.html';
 import './babel';
 // const post = new Post('Webpack Post Title', WebpackLogo);
 // $('pre').addClass('code-2').html(post.toString());
