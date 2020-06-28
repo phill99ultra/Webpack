@@ -28,7 +28,7 @@ const path = require('path'),
         if (isProd) {
             config.minimizer = [
                 new OptimizeCssAssetsWebpackPlugin(),
-                new TerserWebpackPLugin()
+                new TerserWebpackPLugin(),
             ];
         }
         return config;
