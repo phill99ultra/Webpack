@@ -1,8 +1,9 @@
 @import "~normalize.css"
-@import "./fonts.css"
+@import "./fonts"
 $border = 1.5px solid darkred
 body 
     font-family "Open Sans", sans-serif
+    font-weight bold
 
 .container 
     padding-top 2rem
@@ -16,8 +17,7 @@ h1
 .code-2 
     color crimson
 
-.logo 
-    background-image url("../images/logo.png");
+.logo     
     background-size cover
     height 200px
     width 200px
@@ -34,5 +34,6 @@ h1
     h2
         text-align center
         color lightpink
+        font-weight 300
         +below(991px)
             color darkgreen

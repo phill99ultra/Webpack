@@ -1,4 +1,9 @@
 const path = require('path'),
+    PATHS = {
+        src: path.join(__dirname, './src'),
+        dist: path.join(__dirname, './dist'),
+        assets: 'assets/'
+    },
     //Aditional Plugins
     HTMLWebpackPlugin = require('html-webpack-plugin'),
     {
@@ -69,24 +74,31 @@ const path = require('path'),
     plugins = () => {
         const base = [
             new HTMLWebpackPlugin({
-                template: './index.html',
+                // template: './pug/layout/main.pug',
+                hash: false,
+                template: `${PATHS.src}/index.html`,
+                filename: './index.html',
+                // title: 'Webpack Build',
                 minify: {
                     collapseWhitespace: isProd
                 }
             }),
             new CleanWebpackPlugin(),
             new CopyWebpackPlugin([{
-                from: path.resolve(__dirname, 'src/images/favicon.ico'),
-                to: path.resolve(__dirname, 'dist/images')
-            }]),
-            new CopyWebpackPlugin([{
-                from: path.resolve(__dirname, 'src/images/static'),
-                to: path.resolve(__dirname, 'dist/images/static')
-            }]),
+                    from: `${PATHS.src}/static`,
+                    to: `${PATHS.dist}/static`
+                },
+                // {
+                //     from: `${PATHS.src}/${PATHS.assets}/fonts`,
+                //     to: `${PATHS.dist}/${PATHS.assets}/fonts`
+                // }
+                // {
+                //     from: `${PATHS.src}/images`,
+                //     to: `${PATHS.dist}/images`
+                // }
+            ]),
             new MiniCssExtractPlugin({
-                filename: filename('css')
-                // filename: `css/${filename('css')}`,
-                // path: path.resolve(__dirname, 'dist')
+                filename: `${PATHS.assets}css/${filename('css')}`
             })
         ];
         if (isProd) {
@@ -102,8 +114,8 @@ module.exports = {
         analytics: './analytics.js'
     },
     output: {
-        filename: `js/${filename('js')}`,
-        path: path.resolve(__dirname, 'dist')
+        filename: `${PATHS.assets}js/${filename('js')}`,
+        // path: path.resolve(__dirname, 'dist')
     },
     resolve: {
         extensions: ['.js', '.json', '.png'],
@@ -134,6 +146,16 @@ module.exports = {
                     }
                 })
             },
+            // {
+            //     test: /\.pug$/,
+            //     use: [{
+            //         loader: 'pug-loader',
+            //         options: {
+            //             pretty: true,
+            //             exports: false
+            //         }
+            //     }]
+            // },
             {
                 test: /\.html$/,
                 use: [{
@@ -163,7 +185,21 @@ module.exports = {
             },
             {
                 test: /\.(ttf|woff|woff2|eot)$/,
-                use: ['file-loader']
+                // Method using url-loader
+                // use: [{
+                //     loader: 'url-loader?limit=100000',
+                //     options: {
+                //         publicPath: './fonts/',
+                //         name: '../fonts/[name].[ext]',                        
+                //     }
+                // }]
+                use: [{
+                    loader: 'file-loader',
+                    options: {
+                        publicPath: '../fonts/',
+                        outputPath: './assets/fonts'
+                    }
+                }]
             },
             {
                 test: /\.xml$/,
