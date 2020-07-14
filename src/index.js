@@ -8,6 +8,7 @@
 import 'bootstrap';
 import './assets/style/style.styl';
 import './index.html';
+console.log(`Envoirment is ${process.env.NODE_ENV}`);
 // import './babel';
 // const post = new Post('Webpack Post Title', WebpackLogo);
 // $('pre').addClass('code-2').html(post.toString());

@@ -22,7 +22,14 @@ const path = require('path'),
     optimization = () => {
         const config = {
             splitChunks: {
-                chunks: 'all'
+                chunks: 'all',
+                cacheGroups: {
+                    commons: {
+                        name: 'commons',
+                        chunks: 'initial',
+                        minChunks: 2
+                    }
+                }
             }
         };
         if (isProd) {
@@ -41,7 +48,20 @@ const path = require('path'),
                 hmr: isDev,
                 reloadAll: true
             }
-        }, 'css-loader', 'postcss-loader'];
+        }, {
+            loader: 'css-loader',
+            options: {
+                sourceMap: true
+            }
+        }, {
+            loader: 'postcss-loader',
+            options: {
+                sourceMap: true,
+                config: {
+                    path: 'src/postcss.config.js'
+                }
+            }
+        }];
         if (extra) {
             loaders.push(extra);
         }
@@ -73,6 +93,9 @@ const path = require('path'),
     },
     plugins = () => {
         const base = [
+            new MiniCssExtractPlugin({
+                filename: `${PATHS.assets}css/${filename('css')}`
+            }),
             new HTMLWebpackPlugin({
                 // template: './pug/layout/main.pug',
                 hash: false,
@@ -85,21 +108,9 @@ const path = require('path'),
             }),
             new CleanWebpackPlugin(),
             new CopyWebpackPlugin([{
-                    from: `${PATHS.src}/static`,
-                    to: `${PATHS.dist}/static`
-                },
-                // {
-                //     from: `${PATHS.src}/${PATHS.assets}/fonts`,
-                //     to: `${PATHS.dist}/${PATHS.assets}/fonts`
-                // }
-                // {
-                //     from: `${PATHS.src}/images`,
-                //     to: `${PATHS.dist}/images`
-                // }
-            ]),
-            new MiniCssExtractPlugin({
-                filename: `${PATHS.assets}css/${filename('css')}`
-            })
+                from: `${PATHS.src}/static`,
+                to: `${PATHS.dist}/static`
+            }])
         ];
         if (isProd) {
             base.push(new BundleAnalyzerPlugin());
@@ -108,15 +119,19 @@ const path = require('path'),
     };
 module.exports = {
     context: path.resolve(__dirname, 'src'),
-    mode: 'development',
+    externals: {
+        paths: PATHS
+    },
     entry: {
-        main: ['@babel/polyfill', './index.js'],
-        analytics: './analytics.js'
+        main: PATHS.src,
+        // analytics: './analytics.js'
     },
     output: {
         filename: `${PATHS.assets}js/${filename('js')}`,
-        // path: path.resolve(__dirname, 'dist')
+        path: PATHS.dist,
+        publicPath: '/'
     },
+    optimization: optimization(),
     resolve: {
         extensions: ['.js', '.json', '.png'],
         alias: {
@@ -124,13 +139,7 @@ module.exports = {
             '@': path.resolve(__dirname, 'src')
         }
     },
-    optimization: optimization(),
-    devServer: {
-        port: 4444,
-        hot: isDev,
-        overlay: true
-    },
-    devtool: isDev ? 'sourcemap' : '',
+    devtool: isDev ? 'sourcemap' : false,
     plugins: plugins(),
     module: {
         rules: [{ // for CSS files
@@ -185,14 +194,6 @@ module.exports = {
             },
             {
                 test: /\.(ttf|woff|woff2|eot)$/,
-                // Method using url-loader
-                // use: [{
-                //     loader: 'url-loader?limit=100000',
-                //     options: {
-                //         publicPath: './fonts/',
-                //         name: '../fonts/[name].[ext]',                        
-                //     }
-                // }]
                 use: [{
                     loader: 'file-loader',
                     options: {
