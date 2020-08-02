@@ -4,7 +4,7 @@
     "description": "",
     "private": true,
     "scripts": {
-        "dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack.dev.conf.js --hot",
+        "dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack.dev.conf.js",
         "build": "cross-env NODE_ENV=production webpack --config webpack.build.conf.js",
         "watch": "cross-env NODE_ENV=development webpack --config webpack.dev.conf.js --watch",
         "start": "cross-env NODE_ENV=development webpack-dev-server --config webpack.dev.conf.js --open",

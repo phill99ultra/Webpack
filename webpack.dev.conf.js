@@ -5,7 +5,7 @@ const webpack = require('webpack'),
         devtool: 'cheap-module-eval-source-map',
         devServer: {
             contentBase: baseWebpackConfig.externals.paths.dist,
-            mode: 'development',
+            // mode: 'development',
             port: 8081,
             // hot: isDev,
             overlay: true
